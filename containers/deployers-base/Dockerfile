@@ -2,7 +2,8 @@ ARG DEPLOYERS_BASE_CONTAINER
 FROM ${DEPLOYERS_BASE_CONTAINER}
 
 RUN yum update -y && \
-    yum install -y python-setuptools python-ipaddress && easy_install pip && \
+    yum install -y python-ipaddress && \
+    curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1'&& \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
