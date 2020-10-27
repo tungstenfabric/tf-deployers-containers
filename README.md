@@ -1,3 +1,7 @@
+# WARNING!
+
+This repository is deprecated and will be removed soon. Please use https://hub.docker.com/r/tungstenfabric/tf-kolla-ansible-src and https://hub.docker.com/r/tungstenfabric/tf-ansible-deployer-src or just https://github.com/tungstenfabric/tf-devstack to deploy.
+
 # Building containers
 
 All containers or individual container can be built in a same way as main containers in contrail-container-builder repository.
