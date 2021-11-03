@@ -9,6 +9,18 @@ if [ -f $env_file ]; then
   export ENV_FILE="$env_file"
 fi
 
+# build platform info
+export LINUX_ID=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
+if [[ "$linux_id" == 'centos' ]] ; then
+  # ver id is taken from available versions from docker.io
+  linux_ver_id=`cat /etc/redhat-release | awk '{print($4)}'`
+else
+  # for ubuntu ver id matchs 14.04, 16.04
+  # for rhel ver id matchs 7.9, 8.4
+  linux_ver_id=$(awk -F"=" '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"')
+fi
+export LINUX_VER_ID=$linux_ver_id
+
 export LINUX_DISTR=${LINUX_DISTR:-centos}
 export LINUX_DISTR_VER=${LINUX_DISTR_VER:-'7.5.1804'}
 

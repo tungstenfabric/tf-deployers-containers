@@ -15,6 +15,7 @@ path="$1"
 shift
 opts="$@"
 
+echo "INFO: Build platform: $LINUX_ID $LINUX_VER_ID"
 echo "INFO: Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
 echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
 echo "INFO: Contrail registry push (0=no,1=yes): $CONTRAIL_REGISTRY_PUSH"
@@ -58,7 +59,17 @@ function process_container() {
   echo "INFO: Building $container_name" | append_log_file $logfile true
 
   tag="${CONTRAIL_DEPLOYERS_TAG}"
-  local build_arg_opts=''
+
+  local build_arg_opts='--network host'
+  if [[ "$LINUX_ID" == 'rhel' && "${LINUX_VER_ID//.[0-9]*/}" == '8' ]] ; then
+    # podman case
+    build_arg_opts+=' --cap-add=all --security-opt label=disable  --security-opt seccomp=unconfined'
+    build_arg_opts+=' -v /etc/resolv.conf:/etc/resolv.conf:ro'
+    # to make posible use subscription inside container run from container in podman
+    if [ -e /run/secrets/etc-pki-entitlement ] ; then
+      build_arg_opts+=' -v /run/secrets/etc-pki-entitlement:/run/secrets/etc-pki-entitlement:ro'
+    fi
+  fi
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -78,8 +89,9 @@ function process_container() {
   build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
   build_arg_opts+=" --build-arg CONTAINER_NAME=${container_name}"
 
-  sudo docker build --network host -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-    ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  sudo docker build ${build_arg_opts} \
+      -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
+      -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   was_errors=${PIPESTATUS[0]}
   if [ $was_errors -eq 0 -a $CONTRAIL_REGISTRY_PUSH -eq 1 ] ; then
     sudo docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
