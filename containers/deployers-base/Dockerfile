@@ -1,7 +1,10 @@
 ARG DEPLOYERS_BASE_CONTAINER
 FROM ${DEPLOYERS_BASE_CONTAINER}
 
-RUN yum update -y && \
+RUN \
+    source /etc/os-release && \
+    echo "el${VERSION_ID//\.*/}" > /etc/yum/vars/tpcrelease && \
+    yum update -y && \
     yum install -y python-ipaddress && \
     curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | python2 - 'pip==20.1'&& \
     yum clean all -y && \
