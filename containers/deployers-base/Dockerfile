@@ -1,8 +1,9 @@
 ARG DEPLOYERS_BASE_CONTAINER
 FROM ${DEPLOYERS_BASE_CONTAINER}
 
-RUN yum update -y && \
-    yum install -y python-ipaddress && \
+RUN \
+    yum update -y -x "redhat-release*" && \
+    yum install -y python2-ipaddress && \
     curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | python2 - 'pip==20.1'&& \
     yum clean all -y && \
     rm -rf /var/cache/yum
