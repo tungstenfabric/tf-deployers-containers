@@ -8,7 +8,7 @@ ARG CONTAINER_NAME
 # Note: The directory itself is not copied, just its contents.
 COPY src /root/
 
-RUN yum install -y python2-ipaddress git sudo vim gcc sshpass openssl python-devel libffi-devel openssl-devel && \
+RUN yum install -y python2-ipaddress git sudo vim gcc sshpass openssl python2-devel libffi-devel openssl-devel && \
     python2 -m pip --no-cache-dir install --upgrade "Babel==2.8.0" "MarkupSafe==1.1.1" "PyYAML==5.4" "ansible==2.7.11" "bcrypt==3.1.7" \
     "certifi==2019.11.28" "cffi==1.12.3" "cryptography==2.8" "debtcollector==1.22.0" "enum34==1.1.9" "funcsigs==1.0.2" "idna==2.9" \
     "iso8601==0.1.12" "jinja2==2.11.1" "monotonic==1.5" "netaddr==0.7.19" "netifaces==0.10.9" "oslo_config==7.0.0" "oslo_utils==3.42.1" \
