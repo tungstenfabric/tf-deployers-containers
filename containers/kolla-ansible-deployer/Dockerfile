@@ -29,6 +29,8 @@ RUN \
     "oslo.i18n==3.25.1" "paramiko==2.7.1" "pbr==5.4.4" "pycparser==2.19" "pycrypto==2.6.1" "pynacl==1.3.0" "pyparsing==2.4.6" \
     "pytz==2019.3" "requests==2.23.0" "rfc3986==1.3.2" "six==1.14.0" "stevedore==1.32.0" "urllib3==1.25.8" "wrapt==1.12.0"  && \
     /root/prepare.sh && \
+    sed -i "s/enabled = .*/enabled = 0/g" /etc/yum.repos.d/contrail.repo && \
+    sed -i "s/enabled = .*/enabled = 0/g" /etc/yum.repos.d/tpc-source.repo && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
